@@ -32,6 +32,8 @@ function initModels(sequelize) {
   patients.hasMany(reviews, { as: "reviews", foreignKey: "patient_id"});
   doctors.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasOne(doctors, { as: "doctor", foreignKey: "user_id"});
+  patients.belongsTo(users, { as: "user", foreignKey: "userId"});
+  users.hasOne(patients, { as: "patient", foreignKey: "userId"});
   workinghours.belongsTo(workingdays, { as: "day", foreignKey: "day_id"});
   workingdays.hasMany(workinghours, { as: "workinghours", foreignKey: "day_id"});
 

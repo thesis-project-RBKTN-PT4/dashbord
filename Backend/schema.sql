@@ -18,22 +18,6 @@ CREATE SCHEMA IF NOT EXISTS `easymed` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8
 USE `easymed` ;
 
 -- -----------------------------------------------------
--- Table `easymed`.`patients`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `easymed`.`patients` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `address` VARCHAR(255) NULL DEFAULT NULL,
-  `phone_number` VARCHAR(20) NULL DEFAULT NULL,
-  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `easymed`.`users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `easymed`.`users` (
@@ -44,9 +28,35 @@ CREATE TABLE IF NOT EXISTS `easymed`.`users` (
   `role` ENUM('patient', 'doctor') NOT NULL,
   `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
+  `isAdmin` VARCHAR(10) NULL DEFAULT 'false',
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` USING BTREE (`email`) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 23
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `easymed`.`patients`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `easymed`.`patients` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `address` VARCHAR(255) NULL DEFAULT NULL,
+  `phone_number` VARCHAR(20) NULL DEFAULT NULL,
+  `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `userId` INT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `userId_UNIQUE` (`userId` ASC) VISIBLE,
+  CONSTRAINT `userId`
+    FOREIGN KEY (`userId`)
+    REFERENCES `easymed`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -72,8 +82,11 @@ CREATE TABLE IF NOT EXISTS `easymed`.`doctors` (
   UNIQUE INDEX `user_id` (`user_id` ASC) VISIBLE,
   CONSTRAINT `doctors_ibfk_1`
     FOREIGN KEY (`user_id`)
-    REFERENCES `easymed`.`users` (`id`))
+    REFERENCES `easymed`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -95,11 +108,14 @@ CREATE TABLE IF NOT EXISTS `easymed`.`appointments` (
   INDEX `doctor_id` (`doctor_id` ASC) VISIBLE,
   CONSTRAINT `appointments_ibfk_1`
     FOREIGN KEY (`patient_id`)
-    REFERENCES `easymed`.`patients` (`id`),
+    REFERENCES `easymed`.`patients` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `appointments_ibfk_2`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `easymed`.`doctors` (`id`))
+    REFERENCES `easymed`.`doctors` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -135,10 +151,14 @@ CREATE TABLE IF NOT EXISTS `easymed`.`reviews` (
   INDEX `doctor_id` (`doctor_id` ASC) VISIBLE,
   CONSTRAINT `reviews_ibfk_1`
     FOREIGN KEY (`patient_id`)
-    REFERENCES `easymed`.`patients` (`id`),
+    REFERENCES `easymed`.`patients` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `reviews_ibfk_2`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `easymed`.`doctors` (`id`))
+    REFERENCES `easymed`.`doctors` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -157,8 +177,10 @@ CREATE TABLE IF NOT EXISTS `easymed`.`workingdays` (
   INDEX `doctor_id` (`doctor_id` ASC) VISIBLE,
   CONSTRAINT `workingdays_ibfk_1`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `easymed`.`doctors` (`id`))
+    REFERENCES `easymed`.`doctors` (`id`)
+    ON DELETE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -179,11 +201,15 @@ CREATE TABLE IF NOT EXISTS `easymed`.`workinghours` (
   INDEX `day_id` (`day_id` ASC) VISIBLE,
   CONSTRAINT `workinghours_ibfk_1`
     FOREIGN KEY (`doctor_id`)
-    REFERENCES `easymed`.`doctors` (`id`),
+    REFERENCES `easymed`.`doctors` (`id`)
+    ON DELETE CASCADE,
   CONSTRAINT `workinghours_ibfk_2`
     FOREIGN KEY (`day_id`)
-    REFERENCES `easymed`.`workingdays` (`id`))
+    REFERENCES `easymed`.`workingdays` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE RESTRICT)
 ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
