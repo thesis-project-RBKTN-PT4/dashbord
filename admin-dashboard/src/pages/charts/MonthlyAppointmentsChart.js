@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
-import { appointmentsData } from "./AppointmentsData.js";
 Chart.register(...registerables);
 
-const MonthlyAppointmentsChart = () => {
+const MonthlyAppointmentsChart = ({ appointments }) => {
   const chartRef = useRef(null);
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
     if (chartRef.current) {
@@ -12,11 +12,11 @@ const MonthlyAppointmentsChart = () => {
       const appointmentsPerMonth = Array.from({ length: 12 }, () => 0);
       const canceledAppointmentsPerMonth = Array.from({ length: 12 }, () => 0);
 
-      appointmentsData.forEach((appointment) => {
-        const month = new Date(appointment.createdAt).getMonth();
+      appointments.forEach((appointment) => {
+        const month = new Date(appointment.appointment_date).getMonth();
         appointmentsPerMonth[month]++;
 
-        if (appointment.status === "cancelled") {
+        if (appointment.status === "Canceled") {
           canceledAppointmentsPerMonth[month]++;
         }
       });
@@ -52,11 +52,13 @@ const MonthlyAppointmentsChart = () => {
         },
       });
 
+      setChartData(chartInstance);
+
       return () => {
         chartInstance.destroy();
       };
     }
-  }, []);
+  }, [appointments]);
 
   const getMonthName = (month) => {
     const monthNames = [
@@ -76,7 +78,12 @@ const MonthlyAppointmentsChart = () => {
     return monthNames[month - 1];
   };
 
-  return <canvas ref={chartRef} />;
+  return (
+    <div style={{ width: "800px", height: "400px" }} className="items-center justify-center">
+      <canvas ref={chartRef} />
+      <h4>Appointments per month</h4>
+    </div>
+  );
 };
 
 export default MonthlyAppointmentsChart;

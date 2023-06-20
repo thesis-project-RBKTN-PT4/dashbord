@@ -98,4 +98,21 @@ const deleteUser = async (req, res) => {
   } else res.send("user not found");
 };
 
-module.exports = { oneuser, createUser, deleteUser };
+const updateUser = async (req, res) => {
+  const id = req.params.id; // patient id
+  const {
+    isAdmin
+  } = req.body;
+  const currentProfile = await User.findByPk(id);
+  if (currentProfile) {
+    console.log(currentProfile,"current")
+    const newProfile = await currentProfile.update({
+      isAdmin:isAdmin
+    });
+    console.log(newProfile,"new")
+    res.status(200).json({newProfile,message:"user updated successfully"})
+  }
+  else res.status(400).send('something wrong!')
+};
+
+module.exports = { oneuser, createUser, deleteUser, updateUser };

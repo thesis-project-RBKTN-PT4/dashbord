@@ -18,6 +18,15 @@ module.exports = function(sequelize, DataTypes) {
     phone_number: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      unique: "userId"
     }
   }, {
     sequelize,
@@ -30,6 +39,14 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
+        ]
+      },
+      {
+        name: "userId_UNIQUE",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "userId" },
         ]
       },
     ]

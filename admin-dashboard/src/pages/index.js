@@ -2,7 +2,6 @@ import Link from "next/link";
 import { useRouter } from 'next/router';
 import React, { useState } from "react";
 import axios from "axios";
-import Login from "./Login";
 
 export default function Login() {
   const [email, setEmail] = useState("");
