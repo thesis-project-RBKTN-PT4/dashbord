@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Chart } from "chart.js/auto";
 import axios from "axios";
-import Login from "./Login";
 
-const Home = () => {
+const Dashboard = () => {
   const chartRefs = useRef([]);
   const [doctorsData, setDoctorsData] = useState(null);
   const [usersData, setUsersData] = useState(null);
@@ -103,7 +102,6 @@ const Home = () => {
 
   return (
     <div>
-      <Login />
       <div>
         <nav className="bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -139,4 +137,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Dashboard;
