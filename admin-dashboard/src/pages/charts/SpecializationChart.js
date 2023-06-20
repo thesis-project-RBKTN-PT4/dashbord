@@ -3,7 +3,7 @@ import { Chart, registerables } from "chart.js";
 
 Chart.register(...registerables);
 
-const CircleChart = ({ doctorsCount, patientsCount }) => {
+const SpecializationChart = ({ doctorsCount, patientsCount }) => {
   const chartRef = useRef(null);
 
   useEffect(() => {
@@ -37,10 +37,10 @@ const CircleChart = ({ doctorsCount, patientsCount }) => {
   }, [doctorsCount, patientsCount]);
 
   return (
-    <div style={{ width: "400px", height: "400px" }}>
+    <div style={{ width: "500px", height: "500px" }}>
       <canvas ref={chartRef} />
     </div>
   );
 };
 
-export default CircleChart;
+export default SpecializationChart;
