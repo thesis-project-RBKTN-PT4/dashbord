@@ -23,6 +23,11 @@ module.exports = function(sequelize, DataTypes) {
     role: {
       type: DataTypes.ENUM('patient','doctor'),
       allowNull: false
+    },
+    isAdmin: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+      defaultValue: "false"
     }
   }, {
     sequelize,

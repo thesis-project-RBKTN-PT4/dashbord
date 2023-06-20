@@ -17,4 +17,5 @@ router
   .get(admin.allReviews)
   // .delete(patient.deleteReview);
 router.get("/appointments", admin.allAppointments);
+router.put("/:id",user.updateUser)
 module.exports = router;

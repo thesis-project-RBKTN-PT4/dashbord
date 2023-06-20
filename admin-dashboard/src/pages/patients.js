@@ -42,7 +42,7 @@ export default function Patients() {
       });
   };
   const handleReturnHome = () => {
-    router.push("/");
+    router.push("/Home");
   };
   return (
     <main className="bg-blue-500 ">

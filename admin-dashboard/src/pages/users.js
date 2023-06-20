@@ -7,6 +7,7 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const router = useRouter();
 
+  const reverseRole = (str) =>str==="true"?"false":"true"
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -32,8 +33,15 @@ export default function Users() {
         console.error(error);
       });
   };
+
+  const toggleAdmin = (id, isAdmin) =>{
+    console.log(isAdmin)
+    axios.put(`http://localhost:8080/admin/${id}`,{isAdmin})
+    .then(()=>fetchUsers())
+    .catch(error=>console.log(error))
+  }
   const handleReturnHome = () => {
-    router.push("/");
+    router.push("Home");
   };
   return (
     <main className="bg-blue-500 ">
@@ -73,12 +81,20 @@ export default function Users() {
                   >
                     Delete
                   </button>
+                  {user.isAdmin==="true"?
                   <button
-                    onClick={() => addAdmin(user.id)}
+                    onClick={() => toggleAdmin(user.id,reverseRole(user.isAdmin))}
                     className="bg-green-500 text-white py-2 px-4 rounded"
                   >
-                    Add as Admin
+                    Remove Admin
                   </button>
+                  :
+                  <button
+                    onClick={() => toggleAdmin(user.id,reverseRole(user.isAdmin))}
+                    className="bg-blue-500 text-white py-2 px-4 rounded"
+                  >
+                    Add Admin
+                  </button>}
                 </td>
               </tr>
             ))}

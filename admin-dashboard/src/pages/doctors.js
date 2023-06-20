@@ -44,7 +44,7 @@ export default function Doctors() {
       });
   };
   const handleReturnHome = () => {
-    router.push("/");
+    router.push("Home");
   };
   return (
     <main className="bg-blue-500 ">
