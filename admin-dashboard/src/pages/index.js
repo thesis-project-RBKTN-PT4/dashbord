@@ -1,142 +1,85 @@
-import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Chart } from "chart.js/auto";
+import { useRouter } from 'next/router';
+import React, { useState } from "react";
 import axios from "axios";
 import Login from "./Login";
 
-const Home = () => {
-  const chartRefs = useRef([]);
-  const [doctorsData, setDoctorsData] = useState(null);
-  const [usersData, setUsersData] = useState(null);
-  const [patientsData, setPatientsData] = useState(null);
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  useEffect(() => {
-    fetchDoctorsData();
-    fetchUsersData();
-    fetchPatientsData();
-  }, []);
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevents the form from submitting and refreshing the page
 
-  const fetchDoctorsData = () => {
-    axios
-      .get("http://localhost:8080/admin/doctors")
-      .then((res) => {
-        const formattedData = {
-          labels: res.data.doctors.map((doctor) => doctor.specialization),
-          datasets: [
-            {
-              label: "Number of Doctors",
-              data: res.data.doctors.map((doctor) => doctor.count),
-              backgroundColor: "rgba(75, 192, 192, 0.6)",
-            },
-          ],
-        };
-        setDoctorsData(formattedData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchUsersData = () => {
-    axios
-      .get("http://localhost:8080/admin/users")
-      .then((res) => {
-        const formattedData = {
-          labels: ["Users"],
-          datasets: [
-            {
-              label: "Number of Users",
-              data: [res.data.count],
-              backgroundColor: "rgba(54, 162, 235, 0.6)",
-            },
-          ],
-        };
-        setUsersData(formattedData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const fetchPatientsData = () => {
-    axios
-      .get("http://localhost:8080/admin/patients")
-      .then((res) => {
-        const formattedData = {
-          labels: ["Patients"],
-          datasets: [
-            {
-              label: "Number of Patients",
-              data: [res.data.count],
-              backgroundColor: "rgba(255, 99, 132, 0.6)",
-            },
-          ],
-        };
-        setPatientsData(formattedData);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  useEffect(() => {
-    if (doctorsData) {
-      const charts = chartRefs.current.map((chartRef, index) => {
-        const ctx = chartRef.getContext("2d");
-        const chart = new Chart(ctx, {
-          type: "doughnut",
-          data: doctorsData.datasets[index],
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        });
-
-        return chart;
+    try {
+      const response = await axios.post("http://localhost:8080/admin/login", {
+        email,
+        password
       });
 
-      return () => {
-        charts.forEach((chart) => chart.destroy());
-      };
+      if (response.data.message === "Admin logged in successfully!") {
+        router.push('/Home');
+        console.log(response.data.admin);
+        localStorage.setItem("admin",JSON.stringify(response.data.admin))
+      } else {
+        console.log(response.data); // Log the response data for debugging purposes
+      }
+    } catch (error) {
+      console.error(error);
     }
-  }, [doctorsData]);
+  };
 
   return (
-    <div>
-      <Login />
-      <div>
-        <nav className="bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <h1 className="text-white text-2xl font-bold">Hello</h1>
-              <ul className="flex space-x-4 text-white">
-                <li>
-                  <Link href="/users">Users</Link>
-                </li>
-                <li>
-                  <Link href="/doctors">Doctors</Link>
-                </li>
-                <li>
-                  <Link href="/patients">Patients</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </div>
-      <div>
-        {doctorsData &&
-          doctorsData.datasets.map((data, index) => (
-            <canvas
-              key={index}
-              ref={(ref) => (chartRefs.current[index] = ref || {})}
-              width="400"
-              height="400"
+    <div className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden">
+      <div className="w-full p-6 bg-white rounded-md shadow-md lg:max-w-xl">
+        <h1 className="text-6xl font-bold text-center text-gray-700">EasyMed</h1>
+        <h1 className="text-3xl mt-8 font-bold text-center text-gray-900">Welcome to admin Dashboard</h1>
+        <form className="mt-6" onSubmit={handleLogin}>
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-sm font-semibold text-gray-800"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              onChange={(e) => setEmail(e.target.value)}
             />
-          ))}
+          </div>
+          <div className="mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold text-gray-800"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-md focus:border-gray-400 focus:ring-gray-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          <Link
+            href="/forget"
+            className="text-xs text-blue-600 hover:underline"
+          >
+            Forget Password?
+          </Link>
+          <div className="mt-2">
+            <button
+              type="submit"
+              className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-gray-600"
+            >
+              Login
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
-
-export default Home;
+}
