@@ -105,11 +105,9 @@ const updateUser = async (req, res) => {
   } = req.body;
   const currentProfile = await User.findByPk(id);
   if (currentProfile) {
-    console.log(currentProfile,"current")
     const newProfile = await currentProfile.update({
       isAdmin:isAdmin
     });
-    console.log(newProfile,"new")
     res.status(200).json({newProfile,message:"user updated successfully"})
   }
   else res.status(400).send('something wrong!')

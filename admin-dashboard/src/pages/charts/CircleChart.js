@@ -37,7 +37,7 @@ const CircleChart = ({ doctorsCount, patientsCount }) => {
   }, [doctorsCount, patientsCount]);
 
   return (
-    <div style={{ width: "400px", height: "400px" }}>
+    <div style={{ width: "300px", height: "300px" }}>
       <canvas ref={chartRef} />
     </div>
   );
