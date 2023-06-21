@@ -79,9 +79,8 @@ const MonthlyAppointmentsChart = ({ appointments }) => {
   };
 
   return (
-    <div style={{ width: "800px", height: "400px" }} className="items-center justify-center">
+    <div style={{ width: "700px", height: "300px" }} className="items-center justify-center">
       <canvas ref={chartRef} />
-      <h4>Appointments per month</h4>
     </div>
   );
 };
