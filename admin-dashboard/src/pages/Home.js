@@ -1,33 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { Chart, registerables } from "chart.js";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Sidebar from "./SideBar";
 import CircleChart from "./charts/CircleChart";
 import MonthlyAppointmentsChart from "./charts/MonthlyAppointmentsChart";
 import SpecializationChart from "./charts/SpecializationChart";
+import AppointmentSpecialization from "./charts/AppointmentSpecialization";
+
 const Home = () => {
-  const [doctorsData, setDoctorsData] = React.useState([]);
-  const [usersData, setUsersData] = React.useState([]);
-  const [patientsData, setPatientsData] = React.useState([]);
-  const [appointments, setAppointments] = React.useState([]);
-  const [specializationsData, setSpecializationsData] = React.useState([]);
-  const [admin, setAdmin] = useState({})
-  React.useEffect(() => {
+  const [doctorsData, setDoctorsData] = useState([]);
+  const [usersData, setUsersData] = useState([]);
+  const [patientsData, setPatientsData] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [specializationsData, setSpecializationsData] = useState([]);
+
+  useEffect(() => {
     fetchDoctorsData();
     fetchUsersData();
     fetchPatientsData();
     fetchAppointmentsData();
-    setAdmin(JSON.parse(localStorage.getItem("admin")))
   }, []);
 
   const fetchDoctorsData = () => {
     axios
       .get("http://localhost:8080/admin/doctors")
       .then((res) => {
-        console.log("http://localhost:8080/admin/doctors", res.data.doctors)
+        console.log("http://localhost:8080/admin/doctors", res.data.doctors);
         setDoctorsData(res.data.doctors);
-        console.log(doctorsData)
-
+        console.log(doctorsData);
       })
       .catch((error) => {
         console.error(error);
@@ -49,7 +48,6 @@ const Home = () => {
           ],
         };
         setUsersData(formattedData);
-
       })
       .catch((error) => {
         console.error(error);
@@ -60,7 +58,10 @@ const Home = () => {
     axios
       .get("http://localhost:8080/admin/patients")
       .then((res) => {
-        console.log("http://localhost:8080/admin/patients", res.data.patients)
+        console.log(
+          "http://localhost:8080/admin/patients",
+          res.data.patients
+        );
         setPatientsData(res.data.patients);
       })
       .catch((error) => {
@@ -72,7 +73,7 @@ const Home = () => {
     axios
       .get("http://localhost:8080/admin/appointments")
       .then((res) => {
-        console.log(res.data.appointments, 'appointments')
+        console.log(res.data.appointments, "appointments");
         setAppointments(res.data.appointments);
       })
       .catch((error) => {
@@ -80,39 +81,22 @@ const Home = () => {
       });
   };
 
-  const handleLogout = ()=>{
-    localStorage.removeItem("admin")
-  }
-
   return (
-    <div>
-      <div>
-        <nav className="bg-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <h1 className="text-white text-2xl font-bold">Hello {admin.name}</h1>
-              <ul className="flex space-x-4 text-white">
-                <li>
-                  <Link href="/users">Users</Link>
-                </li>
-                <li>
-                  <Link href="/doctors">Doctors</Link>
-                </li>
-                <li>
-                  <Link href="/patients">Patients</Link>
-                </li>
-                <li>
-                  <Link href="/" onClick={()=>handleLogout()}>Log Out</Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </div>
-      <div className="flex flex-row mt-12">
-      <CircleChart doctorsCount={doctorsData.length} patientsCount={patientsData.length} />
-      <MonthlyAppointmentsChart appointments={appointments} />
-      <SpecializationChart doctors={doctorsData} />
+    <div className="flex">
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex flex-col w-5/6 p-6 ml-auto">
+        <h1 className="font-bold">Users</h1>
+        <div className="flex flex-row mt-12">
+          <CircleChart doctorsCount={doctorsData.length} patientsCount={patientsData.length} />
+          <SpecializationChart doctors={doctorsData} />
+        </div>
+        <h1 className="font-bold">Appointments</h1>
+        <div className="flex flex-row mt-12">
+        <MonthlyAppointmentsChart appointments={appointments} />
+        <AppointmentSpecialization doctors={doctorsData} appointments={appointments} />
+        </div>
       </div>
     </div>
   );
