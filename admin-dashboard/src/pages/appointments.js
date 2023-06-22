@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Sidebar from "./SideBar";
+import SideBar from "./SideBar";
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -69,8 +69,8 @@ export default function Appointments() {
 
   return (
     <main className="bg-blue-100 flex flex-row">
-      <Sidebar />
-      <div className="bg-blue-100 min-h-screen flex flex-col items-center justify-center ml-40">
+      <SideBar />
+      <div className="bg-blue-100 min-h-screen flex flex-col items-center justify-center w-5/6 p-6 ml-auto">
         <h1 className="text-6xl text-blue-800 font-bold my-8">EASYMED</h1>
         <div className="flex-grow flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg w-full">
