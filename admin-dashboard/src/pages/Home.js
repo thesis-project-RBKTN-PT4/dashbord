@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Sidebar from "./SideBar";
+import SideBar from "./SideBar";
 import CircleChart from "./charts/CircleChart";
 import MonthlyAppointmentsChart from "./charts/MonthlyAppointmentsChart";
 import SpecializationChart from "./charts/SpecializationChart";
@@ -83,7 +83,7 @@ const Home = () => {
 
   return (
     <div className="flex">
-      <Sidebar />
+      <SideBar />
 
       {/* Main Content */}
       <div className="flex flex-col w-5/6 p-6 ml-auto">
